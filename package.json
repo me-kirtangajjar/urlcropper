@@ -1,9 +1,10 @@
 {
   "name": "urlcropper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A URL shortener that transforms long links into sleek, shareable URLs.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "author": "Kirtan Gajjar",
@@ -13,6 +14,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
     "helmet": "^7.1.0",
     "mongoose": "^8.6.3",
     "shortid": "^2.2.16"

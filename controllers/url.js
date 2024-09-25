@@ -3,16 +3,15 @@ const Url = require("../models/url");
 
 const handleCreateShortUrl = async (req, res) => {
   try {
-    const { url } = req.body;
+    const { originalUrl } = req.body;
 
-    const shortId = shortid.generate();
+    const shortUrlCode = shortid.generate();
 
     await Url.create({
-      shortId: shortId,
-      originalUrl: url,
+      shortId: shortUrlCode,
+      originalUrl,
     });
 
-    // return res.render("home", { shortId: shortId });
     return res.redirect("/");
   } catch (error) {
     console.error(error);
@@ -24,13 +23,19 @@ const handleCreateShortUrl = async (req, res) => {
 
 const handleShortId = async (req, res) => {
   try {
-    const shortId = req.params.id;
+    const { id: shortUrlId } = req.params;
 
-    const shortUrl = await Url.findOne({ shortId });
-    shortUrl.clicks++;
-    shortUrl.save();
+    const shortenedUrl = await Url.findOneAndUpdate(
+      { shortId: shortUrlId },
+      { $inc: { clicks: 1 } },
+      { new: true }
+    );
 
-    return res.redirect(shortUrl.originalUrl);
+    if (!shortenedUrl) {
+      return res.status(404).json({ error: "Short URL not found" });
+    }
+
+    return res.redirect(shortenedUrl.originalUrl);
   } catch (error) {
     console.error(error);
     return res
