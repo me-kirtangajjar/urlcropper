@@ -3,106 +3,128 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
     <title>URL Cropper - Home</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-        background-color: #f8f9fa;
-      }
-      .container {
-        flex: 1;
-      }
-      h1 {
-        margin-bottom: 20px;
-        color: #343a40;
-      }
-      .table-hover tbody tr:hover {
-        background-color: #f1f1f1;
+      .gradient-bg {
+        background: linear-gradient(90deg, #4f46e5, #7c3aed);
       }
     </style>
   </head>
-  <body>
-    <div class="container mt-5">
-      <header class="mb-4">
-        <h1 class="text-center">URL Cropper</h1>
-      </header>
+  <body class="min-h-screen bg-gray-100 flex flex-col">
+    <header class="gradient-bg text-white p-6 shadow-lg">
+      <h1 class="text-3xl font-bold text-center">URL Cropper</h1>
+    </header>
 
-      <form action="/shortUrls" method="POST" class="my-4">
-        <div class="input-group">
+    <main class="container mx-auto px-4 py-8 flex-grow">
+      <form action="/shortUrls" method="POST" class="mb-8">
+        <div class="flex flex-col sm:flex-row gap-4">
           <input
             required
             placeholder="Enter your URL"
             type="url"
             name="originalUrl"
             id="fullUrl"
-            class="form-control"
+            class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          <div class="input-group-append">
-            <button class="btn btn-success" type="submit">Crop</button>
-          </div>
+          <button
+            type="submit"
+            class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out"
+          >
+            Crop
+          </button>
         </div>
       </form>
 
       <% if (shortUrls.length > 0) { %>
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>Full URL</th>
-            <th>Short URL</th>
-            <th>Clicks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% shortUrls.forEach(shortUrl => { %>
-          <tr>
-            <td>
-              <a
-                href="<%= shortUrl.originalUrl %>"
-                target="_blank"
-                rel="noopener noreferrer"
-                ><%= shortUrl.originalUrl %></a
-              >
-            </td>
-            <td>
-              <a
-                href="<%= shortUrl.shortId %>"
-                target="_blank"
-                rel="noopener noreferrer"
-                ><%= shortUrl.shortId %></a
-              >
-            </td>
-            <td><%= shortUrl.clicks %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table class="min-w-full table-auto">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="px-4 py-2 text-left">Full URL</th>
+              <th class="px-4 py-2 text-left">Short URL</th>
+              <th class="px-4 py-2 text-left">Clicks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% shortUrls.forEach((shortUrl, index) => { %>
+            <tr class="hover:bg-gray-100">
+              <td class="border px-4 py-2">
+                <a
+                  href="<%= shortUrl.originalUrl %>"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-blue-600 hover:text-blue-800 truncate block max-w-xs"
+                >
+                  <%= shortUrl.originalUrl %>
+                </a>
+              </td>
+              <td class="border px-4 py-2">
+                <button
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded copy-btn"
+                  data-clipboard-text="<%= `${baseUrl}/${shortUrl.shortId}` %>"
+                >
+                  Copy
+                </button>
+              </td>
+              <td class="border px-4 py-2"><%= shortUrl.clicks %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
       <% } else { %>
-      <div class="alert alert-info" role="alert">
-        No shortened URLs available.
+      <div
+        class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded"
+        role="alert"
+      >
+        <p>No shortened URLs available.</p>
       </div>
       <% } %>
-    </div>
+    </main>
 
-    <footer class="mt-4 text-center">
-      <p class="text-muted">
-        &copy; 2024 URL Cropper. Created by
-        <a href="https://www.linkedin.com/in/me-kirtangajjar" target="_blank"
-          >Kirtan Gajjar</a
-        >. All rights reserved.
-      </p>
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+      <div class="container mx-auto text-center">
+        <p>
+          &copy; 2024 URL Cropper. Created by
+          <a
+            href="https://www.linkedin.com/in/me-kirtangajjar"
+            target="_blank"
+            class="text-indigo-400 hover:text-indigo-300"
+            >Kirtan Gajjar</a
+          >. All rights reserved.
+        </p>
+      </div>
     </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        var clipboard = new ClipboardJS(".copy-btn");
+
+        clipboard.on("success", function (e) {
+          var button = e.trigger;
+          var originalText = button.textContent;
+          button.textContent = "Copied!";
+          button.classList.remove("bg-blue-500", "hover:bg-blue-700");
+          button.classList.add("bg-green-500", "hover:bg-green-700");
+
+          setTimeout(function () {
+            button.textContent = originalText;
+            button.classList.remove("bg-green-500", "hover:bg-green-700");
+            button.classList.add("bg-blue-500", "hover:bg-blue-700");
+          }, 2000);
+        });
+
+        clipboard.on("error", function (e) {
+          console.error("Action:", e.action);
+          console.error("Trigger:", e.trigger);
+          alert("Failed to copy. Please try again.");
+        });
+      });
+    </script>
   </body>
 </html>

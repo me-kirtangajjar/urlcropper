@@ -4,7 +4,10 @@ const { handleShortId, handleCreateShortUrl } = require("../controllers/url");
 
 router.get("/", async (req, res) => {
   const urls = await Url.find();
-  return res.render("home", { shortUrls: urls });
+  return res.render("home", {
+    shortUrls: urls,
+    baseUrl: `${req.protocol}://${req.get("host")}`,
+  });
 });
 router.get("/:id", handleShortId);
 router.post("/shortUrls", handleCreateShortUrl);
