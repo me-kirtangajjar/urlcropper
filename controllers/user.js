@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { setUser } = require("../service/auth");
+const { setUser } = require("../services/auth");
 
 const userRegister = async (req, res) => {
   try {
@@ -26,7 +26,11 @@ const userLogin = async (req, res) => {
     }
 
     const token = setUser(user._id);
-    res.cookie("uid", token);
+    // res.cookie("uid", token);
+    res.cookie('uid', token, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+  });
     return res.redirect("/");
   } catch (error) {
     console.error(error);

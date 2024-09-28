@@ -1,4 +1,4 @@
-const { getUser } = require("../service/auth");
+const { getUser } = require("../services/auth");
 
 const checkAuth = (req, res, next) => {
   const uId = req.cookies.uid;
