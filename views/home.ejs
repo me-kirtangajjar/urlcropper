@@ -17,11 +17,24 @@
   </head>
   <body class="min-h-screen bg-gray-100 flex flex-col">
     <header class="gradient-bg text-white p-6 shadow-lg">
-      <h1 class="text-3xl font-bold text-center">URL Cropper</h1>
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-3xl font-bold">URL Cropper</h1>
+        <div class="flex items-center space-x-4">
+          <a
+            href="/api/logout"
+            class="bg-white text-indigo-600 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-300 ease-in-out"
+            >Logout</a
+          >
+        </div>
+      </div>
     </header>
 
     <main class="container mx-auto px-4 py-8 flex-grow">
-      <form action="/shortUrls" method="POST" class="mb-8">
+      <form
+        action="/shortUrls"
+        method="POST"
+        class="mb-8 bg-white p-6 rounded-lg shadow-md"
+      >
         <div class="flex flex-col sm:flex-row gap-4">
           <input
             required
@@ -29,31 +42,65 @@
             type="url"
             name="originalUrl"
             id="fullUrl"
-            class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             type="submit"
-            class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out"
+            class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out flex items-center justify-center"
+            id="submitBtn"
           >
-            Crop
+            <span id="submitText">Crop URL</span>
+            <svg
+              id="loadingIcon"
+              class="animate-spin h-5 w-5 ml-2 hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
           </button>
         </div>
       </form>
 
-      <% if (shortUrls.length > 0) { %>
+      <% if (shortUrls?.length > 0) { %>
       <div class="overflow-x-auto bg-white shadow-md rounded-lg">
         <table class="min-w-full table-auto">
           <thead class="bg-gray-200">
             <tr>
-              <th class="px-4 py-2 text-left">Full URL</th>
-              <th class="px-4 py-2 text-left">Short URL</th>
-              <th class="px-4 py-2 text-left">Clicks</th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Full URL
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Short URL
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Clicks
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="bg-white divide-y divide-gray-200">
             <% shortUrls.forEach((shortUrl, index) => { %>
-            <tr class="hover:bg-gray-100">
-              <td class="border px-4 py-2">
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <a
                   href="<%= shortUrl.originalUrl %>"
                   target="_blank"
@@ -63,15 +110,17 @@
                   <%= shortUrl.originalUrl %>
                 </a>
               </td>
-              <td class="border px-4 py-2">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <button
-                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded copy-btn"
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded copy-btn transition duration-300 ease-in-out"
                   data-clipboard-text="<%= `${baseUrl}/${shortUrl.shortId}` %>"
                 >
                   Copy
                 </button>
               </td>
-              <td class="border px-4 py-2"><%= shortUrl.clicks %></td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <%= shortUrl.clicks %>
+              </td>
             </tr>
             <% }) %>
           </tbody>
@@ -82,7 +131,7 @@
         class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded"
         role="alert"
       >
-        <p>No shortened URLs available.</p>
+        <p>No shortened URLs available. Start by cropping a URL above!</p>
       </div>
       <% } %>
     </main>
@@ -104,6 +153,10 @@
     <script>
       document.addEventListener("DOMContentLoaded", (event) => {
         var clipboard = new ClipboardJS(".copy-btn");
+        var form = document.querySelector("form");
+        var submitBtn = document.getElementById("submitBtn");
+        var submitText = document.getElementById("submitText");
+        var loadingIcon = document.getElementById("loadingIcon");
 
         clipboard.on("success", function (e) {
           var button = e.trigger;
@@ -123,6 +176,12 @@
           console.error("Action:", e.action);
           console.error("Trigger:", e.trigger);
           alert("Failed to copy. Please try again.");
+        });
+
+        form.addEventListener("submit", function (e) {
+          submitText.textContent = "Cropping...";
+          loadingIcon.classList.remove("hidden");
+          submitBtn.disabled = true;
         });
       });
     </script>

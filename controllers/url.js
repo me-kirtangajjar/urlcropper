@@ -10,6 +10,7 @@ const handleCreateShortUrl = async (req, res) => {
     await Url.create({
       shortId: shortUrlCode,
       originalUrl,
+      createdBy:req.userId
     });
 
     return res.redirect("/");
