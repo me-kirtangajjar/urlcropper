@@ -1,0 +1,45 @@
+import express, { Application, NextFunction, Request, Response } from 'express'
+import path from 'node:path'
+import apiRoutes from './router/apiRouter'
+import viewRoutes from './router/viewRouter'
+import globalErrorHandler from './middlewares/globalErrorHandler'
+import responseMessage from './constant/responseMessage'
+import httpError from './util/httpError'
+import helmet from 'helmet'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+
+const app: Application = express()
+
+// Middleware
+app.use(helmet())
+app.use(
+    cors({
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true
+    })
+)
+app.use(express.json())
+app.use(express.static(path.join(__dirname, '../', 'public')))
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, './views'))
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+
+// Routes
+app.use('/api/v1', apiRoutes)
+app.use('/', viewRoutes)
+
+// 404 Handler
+app.use((req: Request, _: Response, next: NextFunction) => {
+    try {
+        throw new Error(responseMessage.NOT_FOUND('Route'))
+    } catch (err) {
+        httpError(next, err, req, 404)
+    }
+})
+
+// Global error handler
+app.use(globalErrorHandler)
+
+export default app

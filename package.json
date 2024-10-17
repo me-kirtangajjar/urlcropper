@@ -1,27 +1,68 @@
 {
-  "name": "urlcropper",
-  "version": "2.1.0",
-  "description": "A URL shortener that transforms long links into sleek, shareable URLs.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "author": "Kirtan Gajjar",
-  "license": "ISC",
-  "dependencies": {
-    "cookie-parser": "^1.4.6",
-    "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
-    "express": "^4.21.0",
-    "express-rate-limit": "^7.4.0",
-    "express-validator": "^7.2.0",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.6.3",
-    "shortid": "^2.2.16"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.7"
-  }
+    "name": "urlcropper",
+    "version": "2.2.0",
+    "description": "A URL shortener that transforms long links into sleek, shareable URLs.",
+    "main": "src/server.js",
+    "scripts": {
+        "dist": "npx tsc",
+        "start": "cross-env NODE_ENV=production node dist/server.js",
+        "dev": "cross-env NODE_ENV=development nodemon src/server.ts",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --fix",
+        "prepare": "husky",
+        "migrate:dev": "cross-env MIGRATE_MODE=development node script/migration.js",
+        "migrate:prod": "cross-env MIGRATE_MODE=production node script/migration.js"
+    },
+    "author": "Kirtan Gajjar",
+    "license": "ISC",
+    "lint-staged": {
+        "*.ts": [
+            "npm run lint:fix",
+            "npm run format:fix"
+        ]
+    },
+    "dependencies": {
+        "@types/shortid": "^0.0.32",
+        "bcrypt": "^5.1.1",
+        "colorette": "^2.0.20",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
+        "dotenv-flow": "^4.1.0",
+        "ejs": "^3.1.10",
+        "express": "^4.21.1",
+        "helmet": "^8.0.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.7.1",
+        "nanoid": "^5.0.7",
+        "rate-limiter-flexible": "^5.0.3",
+        "shortid": "^2.2.16",
+        "source-map-support": "^0.5.21",
+        "ts-migrate-mongoose": "^3.8.4",
+        "winston": "^3.15.0",
+        "winston-mongodb": "^6.0.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@eslint/js": "^9.12.0",
+        "@types/bcrypt": "^5.0.2",
+        "@types/cookie-parser": "^1.4.7",
+        "@types/cors": "^2.8.17",
+        "@types/eslint__js": "^8.42.3",
+        "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.7",
+        "@types/source-map-support": "^0.5.10",
+        "eslint": "^9.12.0",
+        "eslint-config-prettier": "^9.1.0",
+        "husky": "^9.1.6",
+        "lint-staged": "^15.2.10",
+        "nodemon": "^3.1.7",
+        "prettier": "3.3.3",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.6.3",
+        "typescript-eslint": "^8.9.0"
+    }
 }
